@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+logs/
+.pytest_cache/
+.venv/
+pfsense_diagram.html
+evidencias/
+muestra/*.xml
+!muestra/demo-pfschematic.xml
+!muestra/filter-demo-pfschematic.xml
+iniciar_diagramador.bat
+iniciar_diagramador.sh
+iniciar_pfschematic.bat
+iniciar_pfschematic.sh

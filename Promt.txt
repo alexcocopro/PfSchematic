@@ -1,0 +1,1 @@
+Créame un programa que sirva para Linux y windows que permita subir una exportacion de reglas de pfsence en formato xml y poder obtener de el un diagrama de la red y de las reglas del pfsence el cual sea gráfico e intuitivo

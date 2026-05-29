@@ -1,0 +1,55 @@
+Diseno actual de PfSchematic
+
+Propiedad de Alex Cabello Leiva, consultor de innovacion y ciberseguridad.
+
+Objetivo
+Convertir exports XML de pfSense en un diagrama interactivo, visual y filtrable para revisar flujos de firewall sin navegar manualmente por el XML.
+
+Componentes
+1. Diagramador.py
+   - Lee XML con defusedxml.
+   - Soporta backups completos con raiz pfsense y exports parciales con raiz filter.
+   - Extrae reglas de firewall, interfaces, alias, acciones, protocolos y puertos.
+   - Genera estadisticas y payload de nodos/enlaces para la interfaz.
+   - Mantiene modo CLI para generar HTML estatico o resumen.
+
+2. app.py
+   - Servidor WSGI con Waitress en 127.0.0.1:8765 por defecto.
+   - Expone /api/sample para un demo sanitizado.
+   - Expone /api/upload para cargar otro XML.
+   - Sirve librerias locales de PyVis/vis-network desde la carpeta lib.
+
+3. instalar.py
+   - Instalador ejecutable con Python en Windows y Linux.
+   - Crea .venv, instala requirements.txt, genera lanzadores y ejecuta pruebas.
+
+4. Interfaz web
+   - Vista operativa directa, sin portada.
+   - Boton de demo sanitizado, carga de XML, ajuste de vista, fisica, etiquetas y exportacion JSON.
+   - Filtros por texto, accion, interfaz y protocolo.
+   - Metricos principales: reglas, permitidas, bloqueadas, interfaces y alias.
+   - Diagrama colorido por tipo de nodo y accion de regla.
+   - Tabla lateral con reglas visibles.
+   - Panel de exploracion de alias al seleccionar nodos Alias, con IPs, redes, dominios, puertos y detalles.
+   - Las aristas muestran #n para indicar el orden original de cada regla en pfSense.
+   - Exporta el diagrama filtrado a PNG y PDF con leyenda de filtros visibles/no visibles.
+
+Decisiones
+- defusedxml se usa para evitar parseo XML inseguro.
+- Flask mantiene la prueba local simple y multiplataforma.
+- vis-network ofrece zoom, arrastre, tooltips y fisica sin generar imagenes estaticas ilegibles.
+- El diagrama usa color por accion: verde pass, rojo block, ambar reject y gris para reglas deshabilitadas.
+- La UI evita depender de pfSense en ejecucion; solo requiere el XML exportado.
+
+Muestra validada
+- demo-pfschematic.xml
+- 5 reglas de firewall
+- 4 alias
+- 3 interfaces
+
+Comandos
+python -m pip install -r requisitos.txt
+python instalar.py
+python app.py
+python app.py --port 9000
+python -m unittest discover -s tests

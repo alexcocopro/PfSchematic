@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ app_name }}</title>
+    <link rel="stylesheet" href="/lib/vis-9.1.2/vis-network.css">
+    <link rel="stylesheet" href="/static/styles.css?v=20260530">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">PS</span>
+          <div>
+            <h1>{{ app_name }}</h1>
+            <p class="owner-line">{{ owner_text }}</p>
+            <p id="datasetName">Cargando demo...</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button class="btn secondary" id="sampleButton" title="Cargar demo sanitizado">
+            <i data-lucide="database"></i>
+            <span>Demo</span>
+          </button>
+          <label class="btn primary" for="xmlInput" title="Subir backup XML">
+            <i data-lucide="upload"></i>
+            <span>Subir XML</span>
+          </label>
+          <input id="xmlInput" type="file" accept=".xml,text/xml,application/xml">
+          <button class="icon-btn" id="fitButton" title="Ajustar diagrama">
+            <i data-lucide="scan"></i>
+          </button>
+          <button class="icon-btn" id="physicsButton" title="Activar fisica">
+            <i data-lucide="orbit"></i>
+          </button>
+          <button class="icon-btn is-active" id="labelsButton" title="Mostrar etiquetas">
+            <i data-lucide="tag"></i>
+          </button>
+          <button class="icon-btn" id="exportButton" title="Exportar JSON">
+            <i data-lucide="download"></i>
+          </button>
+          <button class="icon-btn" id="exportPngButton" title="Exportar PNG con leyenda">
+            <i data-lucide="image-down"></i>
+          </button>
+          <button class="icon-btn" id="exportPdfButton" title="Exportar PDF con leyenda">
+            <i data-lucide="file-text"></i>
+          </button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="control-panel">
+          <section class="metric-grid" aria-label="Resumen">
+            <div class="metric accent-green">
+              <span>Reglas</span>
+              <strong id="metricRules">0</strong>
+            </div>
+            <div class="metric accent-blue">
+              <span>Permitidas</span>
+              <strong id="metricPass">0</strong>
+            </div>
+            <div class="metric accent-red">
+              <span>Bloqueadas</span>
+              <strong id="metricBlocked">0</strong>
+            </div>
+            <div class="metric accent-amber">
+              <span>Interfaces</span>
+              <strong id="metricInterfaces">0</strong>
+            </div>
+            <div class="metric accent-teal">
+              <span>Alias</span>
+              <strong id="metricAliases">0</strong>
+            </div>
+          </section>
+
+          <section class="filters" aria-label="Filtros">
+            <label class="field">
+              <span>Buscar</span>
+              <input id="searchInput" type="search" placeholder="IP, alias, puerto, descripcion">
+            </label>
+
+            <div class="field">
+              <span>Accion</span>
+              <div class="segmented" role="group">
+                <button class="seg is-active" data-action-filter="pass">Pass</button>
+                <button class="seg is-active" data-action-filter="block">Block</button>
+                <button class="seg is-active" data-action-filter="reject">Reject</button>
+                <button class="seg is-active" data-action-filter="unknown">Otro</button>
+              </div>
+            </div>
+
+            <label class="field">
+              <span>Interfaz</span>
+              <select id="interfaceSelect"></select>
+            </label>
+
+            <label class="field">
+              <span>Protocolo</span>
+              <select id="protocolSelect"></select>
+            </label>
+          </section>
+
+          <section class="legend" aria-label="Leyenda">
+            <div><span class="dot pass"></span>Permitir</div>
+            <div><span class="dot block"></span>Bloquear</div>
+            <div><span class="dot reject"></span>Rechazar</div>
+            <div><span class="dot disabled"></span>Deshabilitada</div>
+          </section>
+        </aside>
+
+        <section class="diagram-area">
+          <div class="status-line">
+            <span id="statusText">Preparando diagrama...</span>
+            <span id="visibleCount">0 reglas visibles</span>
+          </div>
+          <div id="network"></div>
+        </section>
+
+        <aside class="rules-panel">
+          <section class="alias-panel" id="aliasPanel" hidden>
+            <div class="panel-heading alias-heading">
+              <div>
+                <h2 id="aliasName">Alias</h2>
+                <p id="aliasMeta"></p>
+              </div>
+              <button class="panel-close" id="aliasCloseButton" title="Cerrar detalle">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+            <p class="alias-description" id="aliasDescription"></p>
+            <label class="field alias-filter">
+              <span>Filtrar alias</span>
+              <input id="aliasSearchInput" type="search" placeholder="IP, puerto o descripcion">
+            </label>
+            <div class="alias-table-wrap">
+              <table class="alias-table">
+                <thead>
+                  <tr>
+                    <th>Objeto</th>
+                    <th>Tipo</th>
+                    <th>Detalle</th>
+                  </tr>
+                </thead>
+                <tbody id="aliasItemsBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="rules-section">
+            <div class="panel-heading">
+              <h2>Reglas</h2>
+              <span id="rulePanelCount">0</span>
+            </div>
+            <div class="rules-table-wrap">
+              <table class="rules-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Accion</th>
+                    <th>Interfaz</th>
+                    <th>Flujo</th>
+                    <th>Puerto</th>
+                  </tr>
+                </thead>
+                <tbody id="rulesBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script src="/lib/vis-9.1.2/vis-network.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="/static/app.js?v=20260530"></script>
+  </body>
+</html>

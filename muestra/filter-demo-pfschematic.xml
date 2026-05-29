@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<filter>
+  <rule>
+    <type>pass</type>
+    <interface>lan</interface>
+    <ipprotocol>inet</ipprotocol>
+    <protocol>tcp</protocol>
+    <source>
+      <network>lan</network>
+    </source>
+    <destination>
+      <address>10.10.20.10</address>
+      <port>443</port>
+    </destination>
+    <descr>Export parcial de prueba: HTTPS interno</descr>
+    <tracker>2001</tracker>
+  </rule>
+  <rule>
+    <type>block</type>
+    <interface>wan</interface>
+    <ipprotocol>inet</ipprotocol>
+    <protocol>any</protocol>
+    <source>
+      <any/>
+    </source>
+    <destination>
+      <any/>
+    </destination>
+    <descr>Export parcial de prueba: bloqueo general</descr>
+    <tracker>2002</tracker>
+  </rule>
+</filter>
