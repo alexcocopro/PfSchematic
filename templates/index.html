@@ -20,31 +20,29 @@
         </div>
         <div class="top-actions">
           <button class="btn secondary" id="sampleButton" title="Cargar demo sanitizado">
-            <i data-lucide="database"></i>
             <span>Demo</span>
           </button>
           <label class="btn primary" for="xmlInput" title="Subir backup XML">
-            <i data-lucide="upload"></i>
-            <span>Subir XML</span>
+            <span>XML</span>
           </label>
           <input id="xmlInput" type="file" accept=".xml,text/xml,application/xml">
           <button class="icon-btn" id="fitButton" title="Ajustar diagrama">
-            <i data-lucide="scan"></i>
+            <span>Fit</span>
           </button>
           <button class="icon-btn" id="physicsButton" title="Activar fisica">
-            <i data-lucide="orbit"></i>
+            <span>Fis</span>
           </button>
           <button class="icon-btn is-active" id="labelsButton" title="Mostrar etiquetas">
-            <i data-lucide="tag"></i>
+            <span>Etiq</span>
           </button>
           <button class="icon-btn" id="exportButton" title="Exportar JSON">
-            <i data-lucide="download"></i>
+            <span>JSON</span>
           </button>
           <button class="icon-btn" id="exportPngButton" title="Exportar PNG con leyenda">
-            <i data-lucide="image-down"></i>
+            <span>PNG</span>
           </button>
           <button class="icon-btn" id="exportPdfButton" title="Exportar PDF con leyenda">
-            <i data-lucide="file-text"></i>
+            <span>PDF</span>
           </button>
         </div>
       </header>
@@ -125,7 +123,7 @@
                 <p id="aliasMeta"></p>
               </div>
               <button class="panel-close" id="aliasCloseButton" title="Cerrar detalle">
-                <i data-lucide="x"></i>
+                <span>x</span>
               </button>
             </div>
             <p class="alias-description" id="aliasDescription"></p>
@@ -174,7 +172,6 @@
     <div class="toast" id="toast" role="status"></div>
 
     <script src="/lib/vis-9.1.2/vis-network.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="/static/app.js?v=20260530"></script>
   </body>
 </html>

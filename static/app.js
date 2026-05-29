@@ -666,6 +666,5 @@ els.exportPngButton.addEventListener("click", exportPng);
 els.exportPdfButton.addEventListener("click", exportPdf);
 
 window.addEventListener("load", () => {
-  if (window.lucide) window.lucide.createIcons();
   loadSample().catch((error) => showToast(error.message));
 });

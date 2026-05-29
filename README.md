@@ -21,6 +21,16 @@ Repositorio sugerido: [alexcocopro/PfSchematic](https://github.com/alexcocopro/P
 - Servidor local WSGI con Waitress.
 - Instalador multiplataforma para Windows y Linux.
 
+## Documentacion
+
+- [Guia de usuario](docs/USUARIO.md)
+- [Operacion segura](docs/OPERACION_SEGURA.md)
+- [Arquitectura](docs/ARQUITECTURA.md)
+- [Desarrollo y pruebas](docs/DESARROLLO.md)
+- [Publicacion en GitHub](docs/PUBLICACION_GITHUB.md)
+- [Politica de seguridad](SECURITY.md)
+- [Cambios](CHANGELOG.md)
+
 ## Instalacion Rapida
 
 ```bash
@@ -76,8 +86,10 @@ python app.py --port 9000
 Para exponerlo en la red local:
 
 ```bash
-python app.py --host 0.0.0.0 --port 8765
+python app.py --host 0.0.0.0 --port 8765 --allow-remote --trusted-host 192.168.1.50
 ```
+
+Reemplace `192.168.1.50` por la IP o nombre DNS desde donde abrira la herramienta. PfSchematic no permite enlazarse a `0.0.0.0` sin esa confirmacion explicita.
 
 ## Uso
 
@@ -179,6 +191,24 @@ PfSchematic procesa los XML localmente. El servidor se inicia en `127.0.0.1` por
 Un backup completo de pfSense puede contener hashes, certificados, usuarios, configuraciones sensibles y secretos. No publique ni comparta XML reales sin sanitizarlos.
 
 Los XML reales ubicados en `muestra/` quedan ignorados por Git. Solo se versionan los demos sanitizados `demo-pfschematic.xml` y `filter-demo-pfschematic.xml`.
+
+Medidas activas de endurecimiento:
+
+- enlace local por defecto, sin exposicion remota accidental;
+- `--allow-remote` y `--trusted-host` requeridos para publicar en LAN;
+- validacion de cabecera `Host` con `TRUSTED_HOSTS`;
+- limite de carga XML de 8 MB por defecto, configurable con `PFSCHEMATIC_MAX_UPLOAD_MB`;
+- limites de formulario `MAX_FORM_MEMORY_SIZE` y `MAX_FORM_PARTS`;
+- cabeceras `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` y `Permissions-Policy`;
+- respuestas `/api/*` con `Cache-Control: no-store`;
+- librerias servidas desde `/lib` con lista permitida;
+- sin JavaScript externo/CDN en la interfaz.
+
+Para levantarlo en un equipo de trabajo, use preferiblemente:
+
+```bash
+python app.py --host 127.0.0.1 --port 8765
+```
 
 ## Propiedad
 
