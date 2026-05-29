@@ -11,7 +11,10 @@ templates/index.html    Estructura de la interfaz.
 static/app.js           Filtros, render de red, exportaciones y panel de alias.
 static/styles.css       Diseno responsive.
 lib/vis-9.1.2/          Libreria local para el grafo interactivo.
-muestra/                Demos sanitizados.
+samples/                Demos sanitizados versionados.
+private/                Respaldos reales locales ignorados por Git.
+exports/                Salidas HTML/PNG/PDF y capturas ignoradas por Git.
+runtime/                Logs y archivos temporales ignorados por Git.
 tests/                  Pruebas de parser, payload y seguridad.
 ```
 

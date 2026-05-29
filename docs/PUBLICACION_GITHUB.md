@@ -53,14 +53,14 @@ Revise:
 
 ```bash
 git status --short --ignored
-git ls-files muestra
+git ls-files samples
 ```
 
 Solo deben versionarse:
 
 ```text
-muestra/demo-pfschematic.xml
-muestra/filter-demo-pfschematic.xml
+samples/demo-pfschematic.xml
+samples/filter-demo-pfschematic.xml
 ```
 
-No publique XML reales de pfSense.
+No publique XML reales de pfSense. Deben quedar en `private/pfsense-backups/`, que aparece como ignorado en `git status --short --ignored`.

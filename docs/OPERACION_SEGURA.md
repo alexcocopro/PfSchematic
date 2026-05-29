@@ -35,7 +35,7 @@ No suba backups reales de pfSense a repositorios publicos. Pueden contener:
 - reglas internas;
 - dominios e IPs sensibles.
 
-El `.gitignore` ignora `muestra/*.xml` y solo permite los XML demo sanitizados.
+El `.gitignore` ignora `private/`, `exports/` y `runtime/`. Coloque los backups reales en `private/pfsense-backups/` y use `samples/` solo para XML demo sanitizados.
 
 ## Medidas implementadas
 

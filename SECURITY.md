@@ -27,7 +27,7 @@ La exposicion remota debe ser temporal, controlada y limitada a redes confiables
 
 ## Datos sensibles
 
-Los backups reales de pfSense no deben subirse al repositorio. El proyecto ignora XML reales en `muestra/` y solo permite demos sanitizados.
+Los backups reales de pfSense no deben subirse al repositorio. Guardelos en `private/pfsense-backups/`, carpeta ignorada por Git. Solo deben versionarse XML demo sanitizados dentro de `samples/`.
 
 ## Dependencias
 

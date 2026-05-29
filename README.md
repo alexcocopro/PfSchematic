@@ -26,6 +26,7 @@ Repositorio sugerido: [alexcocopro/PfSchematic](https://github.com/alexcocopro/P
 - [Guia de usuario](docs/USUARIO.md)
 - [Operacion segura](docs/OPERACION_SEGURA.md)
 - [Arquitectura](docs/ARQUITECTURA.md)
+- [Estructura de directorios](docs/ESTRUCTURA_DIRECTORIOS.md)
 - [Desarrollo y pruebas](docs/DESARROLLO.md)
 - [Publicacion en GitHub](docs/PUBLICACION_GITHUB.md)
 - [Politica de seguridad](SECURITY.md)
@@ -121,13 +122,13 @@ El PDF abre una vista imprimible del mismo contenido. Desde el dialogo del naveg
 Generar un HTML estatico:
 
 ```bash
-python Diagramador.py muestra/demo-pfschematic.xml -o pfsense_diagram.html
+python Diagramador.py samples/demo-pfschematic.xml -o exports/html/pfsense_diagram.html
 ```
 
 Ver solo resumen:
 
 ```bash
-python Diagramador.py muestra/demo-pfschematic.xml --summary
+python Diagramador.py samples/demo-pfschematic.xml --summary
 ```
 
 ## Muestra Incluida
@@ -135,7 +136,7 @@ python Diagramador.py muestra/demo-pfschematic.xml --summary
 La app carga por defecto:
 
 ```text
-muestra/demo-pfschematic.xml
+samples/demo-pfschematic.xml
 ```
 
 Resultado esperado con la muestra completa:
@@ -153,7 +154,7 @@ Resultado esperado con la muestra completa:
 Tambien se incluye un export parcial:
 
 ```text
-muestra/filter-demo-pfschematic.xml
+samples/filter-demo-pfschematic.xml
 ```
 
 Ese archivo tiene raiz `filter` y 2 reglas directas.
@@ -166,6 +167,10 @@ Diagramador.py            Parser, estadisticas y generador HTML.
 instalar.py               Instalador Windows/Linux.
 requirements.txt          Dependencias de ejecucion.
 requirements-dev.txt      Dependencias opcionales de verificacion visual.
+samples/                  XML demo sanitizados versionados.
+private/                  Respaldos reales locales ignorados por Git.
+exports/                  PNG/PDF/HTML/capturas generadas ignoradas por Git.
+runtime/                  Logs y archivos temporales ignorados por Git.
 templates/index.html      Interfaz web.
 static/styles.css         Estilos responsive.
 static/app.js             Filtros, diagrama, alias y exportacion.
@@ -190,7 +195,7 @@ PfSchematic procesa los XML localmente. El servidor se inicia en `127.0.0.1` por
 
 Un backup completo de pfSense puede contener hashes, certificados, usuarios, configuraciones sensibles y secretos. No publique ni comparta XML reales sin sanitizarlos.
 
-Los XML reales ubicados en `muestra/` quedan ignorados por Git. Solo se versionan los demos sanitizados `demo-pfschematic.xml` y `filter-demo-pfschematic.xml`.
+Los XML reales deben ubicarse en `private/pfsense-backups/`, carpeta ignorada por Git. Solo se versionan los demos sanitizados en `samples/`.
 
 Medidas activas de endurecimiento:
 

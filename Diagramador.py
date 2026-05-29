@@ -15,7 +15,7 @@ from defusedxml.common import DefusedXmlException
 APP_NAME = "PfSchematic"
 OWNER_TEXT = "Propiedad de Alex Cabello Leiva, consultor de innovacion y ciberseguridad."
 ROOT_DIR = Path(__file__).resolve().parent
-SAMPLE_XML = ROOT_DIR / "muestra" / "demo-pfschematic.xml"
+SAMPLE_XML = ROOT_DIR / "samples" / "demo-pfschematic.xml"
 
 ACTION_STYLES = {
     "pass": {"label": "Permitir", "color": "#18a058"},
@@ -453,9 +453,11 @@ def parse_pfsense_rules(xml_file: str | Path) -> list[dict[str, Any]]:
     return load_pfsense_config(xml_file)["rules"]
 
 
-def generate_network_diagram(rules: list[dict[str, Any]], output_file: str | Path = "pfsense_diagram.html") -> None:
+def generate_network_diagram(rules: list[dict[str, Any]], output_file: str | Path = "exports/html/pfsense_diagram.html") -> None:
     from pyvis.network import Network
 
+    output_file = Path(output_file)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
     config = {
         "name": Path(output_file).name,
         "rules": rules,
@@ -505,7 +507,7 @@ def _print_summary(config: dict[str, Any], output_file: Path | None = None) -> N
 def main() -> None:
     parser = argparse.ArgumentParser(description="Genera diagramas de reglas firewall de pfSense.")
     parser.add_argument("xml", nargs="?", default=str(SAMPLE_XML), help="Ruta del backup XML de pfSense.")
-    parser.add_argument("-o", "--output", default="pfsense_diagram.html", help="Archivo HTML de salida.")
+    parser.add_argument("-o", "--output", default="exports/html/pfsense_diagram.html", help="Archivo HTML de salida.")
     parser.add_argument("--summary", action="store_true", help="Muestra solo el resumen, sin generar HTML.")
     args = parser.parse_args()
 

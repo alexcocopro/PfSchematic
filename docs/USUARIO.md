@@ -17,7 +17,7 @@ http://127.0.0.1:8765
 
 ## Carga de XML
 
-- `Demo`: carga `muestra/demo-pfschematic.xml`, un XML sanitizado incluido para pruebas.
+- `Demo`: carga `samples/demo-pfschematic.xml`, un XML sanitizado incluido para pruebas.
 - `XML`: permite subir un export propio de pfSense.
 
 El XML se procesa localmente. No se envia a servicios externos.
@@ -72,11 +72,11 @@ La leyenda incluye reglas visibles, ocultas por filtro, acciones incluidas/exclu
 Resumen:
 
 ```bash
-python Diagramador.py muestra/demo-pfschematic.xml --summary
+python Diagramador.py samples/demo-pfschematic.xml --summary
 ```
 
 HTML estatico:
 
 ```bash
-python Diagramador.py muestra/demo-pfschematic.xml -o pfsense_diagram.html
+python Diagramador.py samples/demo-pfschematic.xml -o exports/html/pfsense_diagram.html
 ```
