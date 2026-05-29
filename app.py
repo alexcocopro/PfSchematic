@@ -6,19 +6,21 @@ import os
 from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request, send_from_directory
+from werkzeug.exceptions import HTTPException, RequestEntityTooLarge
 
 from Diagramador import APP_NAME, OWNER_TEXT, DiagramadorError, SAMPLE_XML, build_diagram_payload, load_pfsense_config
 
 
 ROOT_DIR = Path(__file__).resolve().parent
 DEFAULT_TRUSTED_HOSTS = ["127.0.0.1", "localhost", "[::1]"]
+DEFAULT_MAX_UPLOAD_MB = 64
 ALLOWED_LIB_FILES = {
     "vis-9.1.2/vis-network.css",
     "vis-9.1.2/vis-network.min.js",
 }
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = int(os.environ.get("PFSCHEMATIC_MAX_UPLOAD_MB", "8")) * 1024 * 1024
-app.config["MAX_FORM_MEMORY_SIZE"] = 1024 * 1024
+app.config["MAX_CONTENT_LENGTH"] = int(os.environ.get("PFSCHEMATIC_MAX_UPLOAD_MB", str(DEFAULT_MAX_UPLOAD_MB))) * 1024 * 1024
+app.config["MAX_FORM_MEMORY_SIZE"] = int(os.environ.get("PFSCHEMATIC_MAX_FORM_MB", str(DEFAULT_MAX_UPLOAD_MB))) * 1024 * 1024
 app.config["MAX_FORM_PARTS"] = 8
 app.config["TRUSTED_HOSTS"] = DEFAULT_TRUSTED_HOSTS
 
@@ -26,6 +28,14 @@ app.config["TRUSTED_HOSTS"] = DEFAULT_TRUSTED_HOSTS
 def _payload_from_path(path: Path):
     config = load_pfsense_config(path)
     return build_diagram_payload(config)
+
+
+def _is_api_request() -> bool:
+    return request.path.startswith("/api/")
+
+
+def _json_error(message: str, status_code: int):
+    return jsonify({"error": message, "status": status_code}), status_code
 
 
 @app.get("/")
@@ -36,6 +46,30 @@ def index():
 @app.get("/api/health")
 def health():
     return jsonify({"ok": True, "app": APP_NAME, "owner": OWNER_TEXT, "sample": SAMPLE_XML.name})
+
+
+@app.errorhandler(RequestEntityTooLarge)
+def handle_request_too_large(exc):
+    if _is_api_request():
+        limit_mb = app.config["MAX_CONTENT_LENGTH"] // (1024 * 1024)
+        return _json_error(f"El XML supera el limite de {limit_mb} MB. Ajuste PFSCHEMATIC_MAX_UPLOAD_MB si necesita procesar respaldos mas grandes.", 413)
+    return exc
+
+
+@app.errorhandler(HTTPException)
+def handle_http_exception(exc):
+    if _is_api_request():
+        message = exc.description or exc.name or "Solicitud no valida."
+        return _json_error(message, exc.code or 500)
+    return exc
+
+
+@app.errorhandler(Exception)
+def handle_unexpected_exception(exc):
+    if _is_api_request():
+        app.logger.exception("Error inesperado procesando una solicitud de API")
+        return _json_error("No se pudo procesar el XML. Revise que sea un backup/export XML valido de pfSense.", 500)
+    raise exc
 
 
 @app.after_request

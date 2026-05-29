@@ -57,10 +57,29 @@ function showToast(message) {
   showToast.timer = window.setTimeout(() => els.toast.classList.remove("show"), 3600);
 }
 
+async function readApiJson(response) {
+  const text = await response.text();
+  if (!text) return {};
+
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    const summary = text
+      .replace(/<script[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<[^>]*>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 180);
+    const detail = summary ? ` Detalle: ${summary}` : "";
+    throw new Error(`El servidor devolvio una respuesta no JSON (${response.status}).${detail}`);
+  }
+}
+
 async function loadSample() {
   els.statusText.textContent = "Cargando demo sanitizado...";
   const response = await fetch("/api/sample");
-  const data = await response.json();
+  const data = await readApiJson(response);
   if (!response.ok) throw new Error(data.error || "No se pudo cargar la muestra.");
   setData(data);
 }
@@ -70,7 +89,7 @@ async function uploadXml(file) {
   form.append("xml", file);
   els.statusText.textContent = `Procesando ${file.name}...`;
   const response = await fetch("/api/upload", { method: "POST", body: form });
-  const data = await response.json();
+  const data = await readApiJson(response);
   if (!response.ok) throw new Error(data.error || "No se pudo procesar el XML.");
   setData(data);
 }

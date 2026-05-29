@@ -202,8 +202,8 @@ Medidas activas de endurecimiento:
 - enlace local por defecto, sin exposicion remota accidental;
 - `--allow-remote` y `--trusted-host` requeridos para publicar en LAN;
 - validacion de cabecera `Host` con `TRUSTED_HOSTS`;
-- limite de carga XML de 8 MB por defecto, configurable con `PFSCHEMATIC_MAX_UPLOAD_MB`;
-- limites de formulario `MAX_FORM_MEMORY_SIZE` y `MAX_FORM_PARTS`;
+- limite de carga XML de 64 MB por defecto, configurable con `PFSCHEMATIC_MAX_UPLOAD_MB`;
+- limites de formulario configurables con `PFSCHEMATIC_MAX_FORM_MB` y `MAX_FORM_PARTS`;
 - cabeceras `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` y `Permissions-Policy`;
 - respuestas `/api/*` con `Cache-Control: no-store`;
 - librerias servidas desde `/lib` con lista permitida;

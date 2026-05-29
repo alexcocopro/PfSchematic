@@ -40,7 +40,7 @@ El `.gitignore` ignora `private/`, `exports/` y `runtime/`. Coloque los backups 
 ## Medidas implementadas
 
 - XML local con `defusedxml`.
-- Limite de carga por defecto: 8 MB.
+- Limite de carga por defecto: 64 MB.
 - Validacion de cabecera `Host`.
 - Cabeceras de seguridad HTTP.
 - Cache deshabilitada para `/api/*`.
@@ -54,7 +54,8 @@ El `.gitignore` ignora `private/`, `exports/` y `runtime/`. Coloque los backups 
 PFSCHEMATIC_HOST=127.0.0.1
 PFSCHEMATIC_PORT=8765
 PFSCHEMATIC_THREADS=4
-PFSCHEMATIC_MAX_UPLOAD_MB=8
+PFSCHEMATIC_MAX_UPLOAD_MB=64
+PFSCHEMATIC_MAX_FORM_MB=64
 PFSCHEMATIC_ALLOW_REMOTE=false
 PFSCHEMATIC_TRUSTED_HOSTS=localhost,127.0.0.1
 ```
