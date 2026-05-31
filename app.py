@@ -14,13 +14,15 @@ from Diagramador import APP_NAME, OWNER_TEXT, DiagramadorError, SAMPLE_XML, buil
 ROOT_DIR = Path(__file__).resolve().parent
 DEFAULT_TRUSTED_HOSTS = ["127.0.0.1", "localhost", "[::1]"]
 DEFAULT_MAX_UPLOAD_MB = 64
+UPLOAD_LIMIT_MB = int(os.environ.get("PFSCHEMATIC_MAX_UPLOAD_MB", str(DEFAULT_MAX_UPLOAD_MB)))
+FORM_MEMORY_LIMIT_MB = int(os.environ.get("PFSCHEMATIC_MAX_FORM_MB", str(UPLOAD_LIMIT_MB)))
 ALLOWED_LIB_FILES = {
     "vis-9.1.2/vis-network.css",
     "vis-9.1.2/vis-network.min.js",
 }
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = int(os.environ.get("PFSCHEMATIC_MAX_UPLOAD_MB", str(DEFAULT_MAX_UPLOAD_MB))) * 1024 * 1024
-app.config["MAX_FORM_MEMORY_SIZE"] = int(os.environ.get("PFSCHEMATIC_MAX_FORM_MB", str(DEFAULT_MAX_UPLOAD_MB))) * 1024 * 1024
+app.config["MAX_CONTENT_LENGTH"] = UPLOAD_LIMIT_MB * 1024 * 1024
+app.config["MAX_FORM_MEMORY_SIZE"] = FORM_MEMORY_LIMIT_MB * 1024 * 1024
 app.config["MAX_FORM_PARTS"] = 8
 app.config["TRUSTED_HOSTS"] = DEFAULT_TRUSTED_HOSTS
 
@@ -51,8 +53,14 @@ def health():
 @app.errorhandler(RequestEntityTooLarge)
 def handle_request_too_large(exc):
     if _is_api_request():
-        limit_mb = app.config["MAX_CONTENT_LENGTH"] // (1024 * 1024)
-        return _json_error(f"El XML supera el limite de {limit_mb} MB. Ajuste PFSCHEMATIC_MAX_UPLOAD_MB si necesita procesar respaldos mas grandes.", 413)
+        upload_limit_mb = app.config["MAX_CONTENT_LENGTH"] // (1024 * 1024)
+        form_limit_mb = app.config["MAX_FORM_MEMORY_SIZE"] // (1024 * 1024)
+        return _json_error(
+            "El XML supera los limites configurados "
+            f"(subida {upload_limit_mb} MB, formulario {form_limit_mb} MB). "
+            "Ajuste PFSCHEMATIC_MAX_UPLOAD_MB y PFSCHEMATIC_MAX_FORM_MB si necesita procesar respaldos mas grandes.",
+            413,
+        )
     return exc
 
 
