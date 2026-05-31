@@ -7,6 +7,8 @@
 - Se agrego validacion de `Host`.
 - Se bloqueo la exposicion remota accidental.
 - Se limito la ruta `/lib` con lista permitida.
+- Se corrigio la carga de XML grandes manteniendo el limite de formulario alineado con el limite de subida.
+- Se reinician los filtros al cargar un nuevo XML para evitar diagramas vacios por filtros anteriores.
 - Se agregaron pruebas de seguridad.
 - Se agrego Dependabot.
 - Se amplio la documentacion operativa, tecnica y de publicacion.

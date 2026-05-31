@@ -1,3 +1,5 @@
+const defaultActionFilters = ["pass", "block", "reject", "unknown"];
+
 const state = {
   data: null,
   network: null,
@@ -5,7 +7,7 @@ const state = {
   labels: true,
   selectedAlias: null,
   visibleRules: [],
-  selectedActions: new Set(["pass", "block", "reject", "unknown"]),
+  selectedActions: new Set(defaultActionFilters),
 };
 
 const els = {
@@ -57,6 +59,11 @@ function showToast(message) {
   showToast.timer = window.setTimeout(() => els.toast.classList.remove("show"), 3600);
 }
 
+function showLoadError(error) {
+  els.statusText.textContent = state.data?.name ? `Sin cambios: ${state.data.name}` : "No se pudo cargar el XML.";
+  showToast(error.message);
+}
+
 async function readApiJson(response) {
   const text = await response.text();
   if (!text) return {};
@@ -100,8 +107,19 @@ function setData(data) {
   hideAliasDetails();
   fillMetrics(data);
   fillSelects(data);
+  resetFilters();
   applyFilters();
   showToast(`Diagrama listo: ${data.stats.total_rules} reglas`);
+}
+
+function resetFilters() {
+  els.searchInput.value = "";
+  els.interfaceSelect.value = "";
+  els.protocolSelect.value = "";
+  state.selectedActions = new Set(defaultActionFilters);
+  document.querySelectorAll("[data-action-filter]").forEach((button) => {
+    button.classList.toggle("is-active", state.selectedActions.has(button.dataset.actionFilter));
+  });
 }
 
 function fillMetrics(data) {
@@ -658,11 +676,17 @@ document.querySelectorAll("[data-action-filter]").forEach((button) => {
 });
 
 els.sampleButton.addEventListener("click", () => {
-  loadSample().catch((error) => showToast(error.message));
+  loadSample().catch(showLoadError);
 });
 els.xmlInput.addEventListener("change", () => {
   const file = els.xmlInput.files[0];
-  if (file) uploadXml(file).catch((error) => showToast(error.message));
+  if (file) {
+    uploadXml(file)
+      .catch(showLoadError)
+      .finally(() => {
+        els.xmlInput.value = "";
+      });
+  }
 });
 els.searchInput.addEventListener("input", applyFilters);
 els.interfaceSelect.addEventListener("change", applyFilters);
@@ -685,5 +709,5 @@ els.exportPngButton.addEventListener("click", exportPng);
 els.exportPdfButton.addEventListener("click", exportPdf);
 
 window.addEventListener("load", () => {
-  loadSample().catch((error) => showToast(error.message));
+  loadSample().catch(showLoadError);
 });

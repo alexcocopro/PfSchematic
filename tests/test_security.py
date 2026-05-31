@@ -47,6 +47,45 @@ class SecurityTests(unittest.TestCase):
         self.assertEqual(response.content_type, "application/json")
         self.assertIn("limite", response.get_json()["error"])
 
+    def test_filter_only_xml_upload_builds_diagram_payload(self):
+        client = app.test_client()
+        xml_path = ROOT / "samples" / "filter-demo-pfschematic.xml"
+
+        response = client.post(
+            "/api/upload",
+            data={"xml": (BytesIO(xml_path.read_bytes()), xml_path.name)},
+            content_type="multipart/form-data",
+            headers={"Host": "localhost"},
+        )
+
+        data = response.get_json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["stats"]["total_rules"], 2)
+        self.assertEqual(len(data["edges"]), 2)
+        self.assertGreater(len(data["nodes"]), 0)
+
+    def test_xml_over_old_form_limit_uploads_with_current_defaults(self):
+        client = app.test_client()
+        padding = b"x" * (2 * 1024 * 1024)
+        xml = (
+            b"<filter>"
+            b"<rule><type>pass</type><source><any/></source><destination><any/></destination></rule>"
+            b"<!--" + padding + b"-->"
+            b"</filter>"
+        )
+
+        response = client.post(
+            "/api/upload",
+            data={"xml": (BytesIO(xml), "large-valid.xml")},
+            content_type="multipart/form-data",
+            headers={"Host": "localhost"},
+        )
+
+        data = response.get_json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["stats"]["total_rules"], 1)
+        self.assertEqual(len(data["edges"]), 1)
+
     def test_unexpected_api_error_is_json(self):
         client = app.test_client()
 

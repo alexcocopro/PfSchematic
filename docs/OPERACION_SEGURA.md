@@ -41,6 +41,7 @@ El `.gitignore` ignora `private/`, `exports/` y `runtime/`. Coloque los backups 
 
 - XML local con `defusedxml`.
 - Limite de carga por defecto: 64 MB.
+- El limite de formulario sigue el limite de carga salvo que se defina `PFSCHEMATIC_MAX_FORM_MB`.
 - Validacion de cabecera `Host`.
 - Cabeceras de seguridad HTTP.
 - Cache deshabilitada para `/api/*`.
