@@ -50,6 +50,11 @@ def health():
     return jsonify({"ok": True, "app": APP_NAME, "owner": OWNER_TEXT, "sample": SAMPLE_XML.name})
 
 
+@app.get("/favicon.ico")
+def favicon():
+    return "", 204
+
+
 @app.errorhandler(RequestEntityTooLarge)
 def handle_request_too_large(exc):
     if _is_api_request():
