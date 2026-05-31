@@ -21,6 +21,12 @@ class SecurityTests(unittest.TestCase):
         self.assertIn("default-src 'self'", response.headers["Content-Security-Policy"])
         self.assertEqual(response.headers["Cache-Control"], "no-store")
 
+    def test_favicon_does_not_log_browser_404(self):
+        client = app.test_client()
+        response = client.get("/favicon.ico", headers={"Host": "localhost"})
+
+        self.assertEqual(response.status_code, 204)
+
     def test_untrusted_host_is_rejected(self):
         client = app.test_client()
         response = client.get("/api/health", headers={"Host": "evil.example"})

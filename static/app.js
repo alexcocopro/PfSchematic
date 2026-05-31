@@ -248,27 +248,33 @@ function renderNetwork(rules) {
   };
 
   const container = document.getElementById("network");
-  state.network = new vis.Network(container, networkData, options);
+  if (state.network) {
+    state.network.destroy();
+    state.network = null;
+  }
+  const network = new vis.Network(container, networkData, options);
+  state.network = network;
   const fitNetwork = () => {
-    if (!state.network) return;
-    state.network.moveTo({ position: { x: 0, y: 0 }, scale: 0.56, animation: false });
+    if (state.network !== network) return;
+    network.moveTo({ position: { x: 0, y: 0 }, scale: 0.56, animation: false });
     window.setTimeout(() => {
-      state.network.fit({ animation: { duration: 450, easingFunction: "easeInOutQuad" } });
+      if (state.network === network) network.fit({ animation: { duration: 450, easingFunction: "easeInOutQuad" } });
     }, 80);
   };
   window.setTimeout(fitNetwork, 250);
   window.setTimeout(fitNetwork, 1100);
   window.setTimeout(fitNetwork, 2600);
-  state.network.once("stabilizationIterationsDone", () => {
-    state.network.setOptions({ physics: { enabled: state.physics } });
+  network.once("stabilizationIterationsDone", () => {
+    if (state.network !== network) return;
+    network.setOptions({ physics: { enabled: state.physics } });
     fitNetwork();
   });
-  state.network.on("selectEdge", (params) => {
+  network.on("selectEdge", (params) => {
     const edgeId = params.edges[0];
     const edge = state.data.edges.find((item) => item.id === edgeId);
     if (edge) highlightRule(edge.ruleId);
   });
-  state.network.on("select", (params) => {
+  network.on("select", (params) => {
     if (!params.nodes.length) {
       if (!params.edges.length) hideAliasDetails();
       return;
